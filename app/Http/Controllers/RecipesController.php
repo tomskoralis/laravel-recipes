@@ -15,7 +15,8 @@ class RecipesController extends Controller
 
     public function index(): AnonymousResourceCollection
     {
-        $recipes = Recipe::orderByDesc('id')
+        $recipes = Recipe::query()
+            ->orderByDesc('id')
             ->paginate(self::RECIPES_PER_PAGE);
 
         return RecipeCardResource::collection($recipes);
@@ -26,14 +27,14 @@ class RecipesController extends Controller
         return new RecipeResource($recipe);
     }
 
-    public function store(Request $request): RecipeResource
+    public function store(Request $request): RecipeResource|JsonResponse
     {
-//        $ingredients = $request->get('ingredients');
-//        if (!$this->areIngredientsValid($ingredients)) {
-//            return response()->json([
-//                'message' => 'Recipe must have at least 1 ingredient and each ingredient must have a name and amount!',
-//            ], 400);
-//        }
+        $ingredients = $request->get('ingredients');
+        if (!$this->areIngredientsValid($ingredients)) {
+            return response()->json([
+                'message' => 'Recipe must have at least 1 ingredient and each ingredient must have a name and amount!',
+            ], 400);
+        }
 
         $recipe = (new Recipe())->fill([
             'name' => $request->get('name'),
@@ -48,14 +49,14 @@ class RecipesController extends Controller
         return new RecipeResource($recipe);
     }
 
-    public function update(Recipe $recipe, Request $request): RecipeResource
+    public function update(Recipe $recipe, Request $request): RecipeResource|JsonResponse
     {
-//        $ingredients = $request->get('ingredients');
-//        if (!$this->areIngredientsValid($ingredients)) {
-//            return response()->json([
-//                'message' => 'Recipe must have at least 1 ingredient and each ingredient must have a name and amount!',
-//            ], 400);
-//        }
+        $ingredients = $request->get('ingredients');
+        if (!$this->areIngredientsValid($ingredients)) {
+            return response()->json([
+                'message' => 'Recipe must have at least 1 ingredient and each ingredient must have a name and amount!',
+            ], 400);
+        }
 
         $recipe = $recipe->fill([
             'name' => $request->get('name'),
@@ -79,22 +80,22 @@ class RecipesController extends Controller
         return response()->json([], 204);
     }
 
-//    private function areIngredientsValid($ingredients): bool
-//    {
-//        if (!$ingredients || count($ingredients) === 0) {
-//            return false;
-//        }
-//
-//        foreach ($ingredients as $ingredient) {
-//            if (
-//                !isset($ingredient['name']) ||
-//                !$ingredient['name'] ||
-//                !isset($ingredient['amount']) ||
-//                !$ingredient['amount']
-//            ) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+    private function areIngredientsValid($ingredients): bool
+    {
+        if (!$ingredients || count($ingredients) === 0) {
+            return false;
+        }
+
+        foreach ($ingredients as $ingredient) {
+            if (
+                !isset($ingredient['name']) ||
+                !$ingredient['name'] ||
+                !isset($ingredient['amount']) ||
+                !$ingredient['amount']
+            ) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

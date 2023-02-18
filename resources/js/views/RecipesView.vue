@@ -5,7 +5,7 @@
     <div v-else-if="state.isError === true">Error</div>
 
     <div v-else>
-        <p>Page {{ page }}</p>
+        <p>Page {{ page }} of {{ meta.pageCount }}</p>
         <p v-if="meta.to > 0">Displaying recipes {{ meta.from }} - {{ meta.to }}</p>
         <p v-else>No recipes found!</p>
         <ul class="recipe-list">
@@ -18,25 +18,39 @@
                 />
             </li>
         </ul>
-
         <div class="button-wrapper">
-            <div class="button-container">
-                <button :disabled="page <= 1" @click="handleFirstPage" class="button">
-                    First
-                </button>
+            <ul class="long-button-row">
+                <li v-for="i in meta.pageCount">
+                    <button class="page-button" @click="handleNewPage(i)" :class="{'current-page': i === page}"
+                            v-if="i === 1 || i === meta.pageCount || i >= page - 2 && i <= page + 2">
+                        {{ i }}
+                    </button>
+                    <button class="page-between" @click.prevent
+                            v-if="i !== 1 && i === page - 3 || i === page + 3 && i !== meta.pageCount">
+                        ...
+                    </button>
+                </li>
 
-                <button :disabled="page <= 1" @click="handlePrevPage" class="button">
-                    Previous
-                </button>
+            </ul>
 
-                <button :disabled="page >= meta.pageCount" @click="handleNextPage" class="button">
-                    Next
-                </button>
+            <ul class="short-button-row">
+                <li>
+                    <button :disabled="page <= 1" @click="handleNewPage(page - 1)" class="page-button">
+                        &#60;
+                    </button>
+                </li>
+                <li>
+                    <div class="current-page">
+                        {{ page }}
+                    </div>
+                </li>
+                <li>
+                    <button :disabled="page >= meta.pageCount" @click="handleNewPage(page + 1)" class="page-button">
+                        &#62;
+                    </button>
+                </li>
+            </ul>
 
-                <button :disabled="page >= meta.pageCount" @click="handleLastPage" class="button">
-                    Last
-                </button>
-            </div>
         </div>
     </div>
 </template>
@@ -105,37 +119,15 @@ const fetchData = async (page: number) => {
     }
 };
 
-const handlePrevPage = () => {
-    page.value--;
+const handleNewPage = (newPage: number) => {
+    page.value = newPage;
     fetchData(page.value);
-    setQueryNewPage();
-};
-
-const handleNextPage = () => {
-    page.value++;
-    fetchData(page.value);
-    setQueryNewPage();
-};
-
-const handleFirstPage = () => {
-    page.value = 1;
-    fetchData(page.value);
-    setQueryNewPage();
-};
-
-const handleLastPage = () => {
-    page.value = meta.value.pageCount;
-    fetchData(page.value);
-    setQueryNewPage();
-};
-
-const setQueryNewPage = () => {
     router.push({
         query: {
             page: page.value,
         },
     });
-};
+}
 </script>
 
 <style scoped lang="scss">
@@ -151,11 +143,10 @@ const setQueryNewPage = () => {
 }
 
 .card-container .recipe-card {
-    color: black;
+    color: $secondary-background-color;
     text-decoration: none;
-    padding: 0.25rem;
-    border: 2px solid #ccc;
-    border-radius: 1rem;
+    border: 2px solid $border-color;
+    border-radius: 0.3rem;
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
@@ -163,7 +154,6 @@ const setQueryNewPage = () => {
     @include for-at-least($breakpoint-md) {
         max-width: 100%;
         flex-direction: row;
-        padding: 1rem;
     }
     @include for-at-least($breakpoint-lg) {
         height: 100%;
@@ -175,29 +165,67 @@ const setQueryNewPage = () => {
 }
 
 .button-wrapper {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: fit-content;
+    margin: 1rem auto 0;
 }
 
-.button-container {
-    gap: 0.25rem;
-    display: flex;
-    flex-wrap: wrap;
+.long-button-row {
+    display: none;
+    flex-direction: row;
+    width: fit-content;
     @include for-at-least($breakpoint-md) {
-        display: inline-grid;
-        grid-template-columns: repeat(4, 1fr);
+        display: flex;
     }
 }
 
-.button {
-    width: 100%;
-    @include for-at-least($breakpoint-sm + 4rem) {
-        width: 40%;
-    }
+.short-button-row {
+    display: flex;
+    margin-bottom: 1rem;
+    @extend .long-button-row;
     @include for-at-least($breakpoint-md) {
-        width: 100%;
+        display: none;
+    }
+}
+
+.page-button {
+    min-width: 2rem;
+    height: 1.9rem;
+    margin: 0 0.25rem;
+    background-color: $background-color;
+    border: 2px solid $border-color;
+    border-radius: 0.5rem;
+    padding: 0.1rem 0.7rem;
+    text-align: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    white-space: nowrap;
+
+    &:hover {
+        border: 2px solid $link-hover-color;
+    }
+
+    &:disabled {
+        border: none;
+        cursor: not-allowed;
+    }
+}
+
+.page-between {
+    @extend .page-button;
+    cursor: default;
+
+    &:hover {
+        border: 2px solid $border-color;
+    }
+}
+
+.current-page {
+    @extend .page-button;
+    border: 2px solid $secondary-background-color;
+
+    &:hover {
+        border: 2px solid $secondary-background-color;
     }
 }
 </style>

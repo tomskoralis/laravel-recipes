@@ -41,6 +41,7 @@ const updateValue = (e: Event) => {
 </script>
 
 <style lang="scss" scoped>
+@import '../../css/app.scss';
 
 .input-wrapper {
     display: flex;
@@ -50,15 +51,16 @@ const updateValue = (e: Event) => {
 }
 
 input {
-    border: 2px solid #ccc;
+    border: 2px solid $border-color;
     border-radius: 0.5rem;
     padding: 0.25rem 0.5rem;
+
     &:focus {
         outline: none;
     }
 }
 
 .error {
-    color: red;
+    color: $error-color;
 }
 </style>

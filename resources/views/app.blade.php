@@ -7,7 +7,8 @@
     @vite(['resources/css/base.css', 'resources/css/app.scss'])
 </head>
 <body>
-<div id="app"></div>
+<div id="app">
 @vite('resources/js/app.ts')
+</div>
 </body>
 </html>

@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class IngredientResource extends JsonResource
 {
-    public function toArray($request):array
+    public function toArray($request): array
     {
         /** @var Ingredient $this */
         return [

@@ -35,9 +35,9 @@
     <div class="button-container">
         <button type="button" @click="router.back()" class="button">Go back</button>
         <div class="button-container">
-            <a :href="route.fullPath + '/edit'">
+            <RouterLink :to="route.fullPath +'/edit'">
                 <button v-if="state.recipe" class="button">Edit</button>
-            </a>
+            </RouterLink>
             <button v-if="state.recipe" @click="deleteRecipe()" class="danger-button">Delete</button>
         </div>
     </div>

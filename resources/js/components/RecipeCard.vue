@@ -27,19 +27,33 @@ const props = defineProps<RecipeShort>();
 @import '../../css/app.scss';
 
 .recipe-image {
-    border-radius: 0.5rem;
+    border-top-left-radius: 0.15rem;
+    border-top-right-radius: 0.15rem;
     object-fit: cover;
     max-height: 20rem;
+    overflow: hidden;
     @include for-at-least($breakpoint-md) {
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0.15rem;
         max-width: 40%;
     }
 }
 
 .recipe-info {
+    padding: 0.5rem;
     row-gap: 0.2rem;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
     justify-content: center;
+
+    p {
+        max-height: 3em;
+        overflow: hidden;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
 }
 </style>

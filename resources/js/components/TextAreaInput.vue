@@ -2,7 +2,7 @@
     <div class="input-wrapper">
         <label :for="props.id">{{ props.label }}</label>
         <textarea :id="props.id" v-bind="$attrs" :value="inputValue"
-               @input="updateValue" :placeholder="props.placeholder"/>
+                  @input="updateValue" :placeholder="props.placeholder"/>
         <p v-if="error" class="error">{{ props.error }}</p>
     </div>
 </template>
@@ -41,6 +41,7 @@ const updateValue = (e: Event) => {
 </script>
 
 <style lang="scss" scoped>
+@import '../../css/app.scss';
 
 .input-wrapper {
     display: flex;
@@ -50,11 +51,11 @@ const updateValue = (e: Event) => {
 }
 
 textarea {
-    border: 2px solid #ccc;
+    border: 2px solid $border-color;
     border-radius: 0.5rem;
     padding: 0.25rem 0.5rem;
-    resize:none;
-    overflow:hidden;
+    resize: none;
+    overflow: hidden;
 
     &:focus {
         outline: none;
@@ -62,6 +63,6 @@ textarea {
 }
 
 .error {
-    color: red;
+    color: $error-color;
 }
 </style>
